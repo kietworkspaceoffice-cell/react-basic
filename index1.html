@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+
+      function Input() {
+        const [changeText, setChangeText] = React.useState('');
+        function saveInputChange(event) {
+          setChangeText(event.target.value);
+        }
+
+        function reset() {
+          setChangeText('');
+        }
+
+        function example() {
+          setChangeText('Alice');
+        };
+        return (
+          <>
+            <input 
+            placeholder='Type a name here' 
+            size='20'
+            onChange={saveInputChange}
+            value={changeText}
+            />
+            <button onClick={reset}>Reset</button>
+            <button onClick={example}>Example</button>
+            <p>Hello {changeText}</p>
+          </>
+        );
+      };
+
+      // function Paragraph() {
+      //   return (
+      //     <>
+      //       <p>Hello</p>
+      //     </>
+      //   );
+      // }
+      
+
+      function App() {
+        return (
+          <>
+            <Input />
+          </>
+        );
+      };
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>

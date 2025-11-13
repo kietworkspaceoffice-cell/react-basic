@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+
+        function ChatInput({chatMessage, setChatMessage}) {
+          const [inputChange, setInputChange] = React.useState('');
+          function saveInputChange(event) {
+            setInputChange(event.target.value);
+          };
+
+          async function sendMessage() {
+            setInputChange('');
+            const newChatMessage = [
+                ...chatMessage,
+                {
+                  message: inputChange,
+                  sender: 'user',
+                  key: crypto.randomUUID()
+                }
+              ];
+            
+            setChatMessage(newChatMessage);
+                
+            setChatMessage(chatMessage => [
+                ...chatMessage,
+                {
+                  message: 'Loading...',
+                  sender: 'robot',
+                  key: crypto.randomUUID()
+                }
+              ]); 
+
+              const response = await Chatbot.getResponseAsync(inputChange);
+              setChatMessage([
+                ...newChatMessage,
+                {
+                  message: response,
+                  sender: 'robot',
+                  key: crypto.randomUUID()
+                }
+              ]);              
+          };
+
+          function enterMessage(event) {
+            console.log(event.key);
+            if (event.key === 'Enter') {
+              sendMessage();
+            } else if (event.key === 'Escape') {
+              setInputChange('');
+            }
+          }
+
+            return (
+                <>
+                    <input 
+                      placeholder="Send a message to Chatbot"
+                      size="30"  
+                      onChange={saveInputChange}
+                      value={inputChange}
+                      onKeyDown={enterMessage}
+                    />
+                    <button onClick={sendMessage}>Send</button>
+                </>
+            );
+        };
+        
+        function ChatMessage({message, sender}) {
+          return (
+            <div>
+              {sender === 'robot' && (
+                <img src="./robot.png" width="30"/>
+              )}
+              {message}
+              {sender === 'user' && (
+                <img src="./user.png" width="30"/>
+              )} 
+            </div>
+          );
+        };
+
+        function ChatMessages({chatMessage}) {
+          return (
+            <>
+            {chatMessage.map((chatMessage) => {
+                    return (
+                      <ChatMessage
+                        message = {chatMessage.message}
+                        sender = {chatMessage.sender}
+                        key = {chatMessage.key}
+                      />
+                    );
+                  })} 
+            </>
+          )
+
+        };
+
+        function App() {
+          const [chatMessage, setChatMessage] = React.useState([]);
+          // const [chatMessage, setChatMessage] = array;
+          // const chatMessage = array[0];
+          // const setChatMessage = array[1];
+          return (
+            <div>
+                <ChatInput 
+                  chatMessage={chatMessage}
+                  setChatMessage={setChatMessage}
+                /> 
+                <ChatMessages 
+                  chatMessage={chatMessage}
+                />
+            </div>
+          );
+        }
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>
